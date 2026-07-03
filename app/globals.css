@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #fafafa;
+  --paper-raised: #ffffff;
+  --ink: #111111;
+  --ink-muted: #737373;
+  --wood: #a3a3a3;
+  --wood-dark: #404040;
+  --shelf-line: #e5e5e5;
+  --accent: #111111;
+  --accent-hover: #333333;
+  --gold: #a3a3a3;
+  --verified: #111111;
+}
+
+/* The admin dashboard keeps its own warm, distinct theme so it never
+   reads as part of the public grayscale site. */
+.admin-theme {
+  --paper: #f6f1e7;
+  --paper-raised: #fbf8f1;
+  --ink: #2c2420;
+  --ink-muted: #746a5f;
+  --wood: #8a5a3b;
+  --wood-dark: #5f3c26;
+  --shelf-line: #d8c9ae;
+  --accent: #7a3b33;
+  --accent-hover: #632c26;
+  --gold: #b08947;
+  --verified: #3f6b4f;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-wood: var(--wood);
+  --color-wood-dark: var(--wood-dark);
+  --color-shelf-line: var(--shelf-line);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-gold: var(--gold);
+  --color-verified: var(--verified);
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), sans-serif;
+}
+
+/* Serif display type is part of the admin theme's distinct identity only —
+   the public site stays plain sans-serif throughout. */
+.admin-theme h1,
+.admin-theme h2,
+.admin-theme h3,
+.admin-theme h4,
+.admin-theme .font-display {
+  font-family: var(--font-display), serif;
+}
+
+::selection {
+  background: #111111;
+  color: #fafafa;
+}
+
+.shelf-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--shelf-line) transparent;
+}
+.shelf-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.shelf-scroll::-webkit-scrollbar-thumb {
+  background: var(--shelf-line);
+  border-radius: 999px;
+}
