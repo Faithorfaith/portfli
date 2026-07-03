@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f6f1e7;
+  --paper-raised: #fbf8f1;
+  --ink: #2c2420;
+  --ink-muted: #746a5f;
+  --wood: #8a5a3b;
+  --wood-dark: #5f3c26;
+  --shelf-line: #d8c9ae;
+  --accent: #7a3b33;
+  --accent-hover: #632c26;
+  --gold: #b08947;
+  --verified: #3f6b4f;
+}
+
+@theme inline {
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-wood: var(--wood);
+  --color-wood-dark: var(--wood-dark);
+  --color-shelf-line: var(--shelf-line);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-gold: var(--gold);
+  --color-verified: var(--verified);
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), sans-serif;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display), serif;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--paper);
+}
+
+.shelf-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--shelf-line) transparent;
+}
+.shelf-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.shelf-scroll::-webkit-scrollbar-thumb {
+  background: var(--shelf-line);
+  border-radius: 999px;
+}
