@@ -1,6 +1,6 @@
 const STYLES: Record<string, string> = {
-  Verified: "bg-verified/10 text-verified border-verified/30",
-  Original: "bg-gold/15 text-wood-dark border-gold/40",
+  Verified: "bg-ink text-paper-raised border-ink",
+  Original: "bg-black/5 text-ink-muted border-black/10",
   "Public Domain": "bg-black/5 text-ink-muted border-black/10",
   "Free Licensed": "bg-black/5 text-ink-muted border-black/10",
 };

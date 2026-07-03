@@ -47,7 +47,7 @@ export default function ShelfRow({
               />
             ))}
           </div>
-          <div className="pointer-events-none absolute right-0 bottom-6 left-0 h-3 rounded-full bg-wood shadow-[0_10px_14px_rgba(90,58,30,0.35)]" />
+          <div className="pointer-events-none absolute right-0 bottom-6 left-0 h-3 rounded-full bg-wood shadow-[0_10px_14px_rgba(0,0,0,0.2)]" />
         </div>
       )}
     </section>

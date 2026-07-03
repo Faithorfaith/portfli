@@ -37,7 +37,7 @@ export default function BookCover({
 
   return (
     <div className="group/cover relative w-[128px] shrink-0 select-none sm:w-[140px]">
-      <div className="relative h-[184px] overflow-hidden rounded-md shadow-[0_6px_14px_rgba(60,45,25,0.18)] transition-all duration-300 group-hover/cover:-translate-y-2 group-hover/cover:shadow-[0_18px_30px_rgba(60,45,25,0.28)] sm:h-[200px]">
+      <div className="relative h-[184px] overflow-hidden rounded-md shadow-[0_6px_14px_rgba(0,0,0,0.14)] transition-all duration-300 group-hover/cover:-translate-y-2 group-hover/cover:shadow-[0_18px_30px_rgba(0,0,0,0.22)] sm:h-[200px]">
         <Link href={`/book/${book.id}`} className="absolute inset-0 block">
           {book.coverUrl ? (
             <Image src={book.coverUrl} alt={book.title} fill sizes="140px" className="object-cover" />

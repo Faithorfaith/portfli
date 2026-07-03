@@ -59,7 +59,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
       )}
 
       <div className="grid gap-10 md:grid-cols-[240px_1fr]">
-        <div className="relative h-[340px] w-[240px] overflow-hidden rounded-lg shadow-[0_16px_30px_rgba(60,45,25,0.25)]">
+        <div className="relative h-[340px] w-[240px] overflow-hidden rounded-lg shadow-[0_16px_30px_rgba(0,0,0,0.2)]">
           {book.coverUrl ? (
             <Image src={book.coverUrl} alt={book.title} fill className="object-cover" />
           ) : (
