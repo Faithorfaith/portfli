@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Shelf {
+  id          String @id
+  label       String
+  description String
+  order       Int
+  books       Book[]
+}
+
+model Book {
+  id          Int      @id @default(autoincrement())
+  shelfId     String
+  shelf       Shelf    @relation(fields: [shelfId], references: [id])
+  order       Int
+  title       String
+  author      String
+  badge       String
+  bg          String
+  ink         String
+  accent      String
+  styleIndex  Int
+  dimIndex    Int
+  reads       Int
+  saveCount   Int
+  tipCount    Int
+  description String
+  lean        Boolean  @default(false)
+  notes       Note[]
+  pages       Page[]
+  saves       Save[]
+  bookmarks   Bookmark[]
+  reports     Report[]
+  tips        Tip[]
+}
+
+model Page {
+  id     Int    @id @default(autoincrement())
+  bookId Int
+  book   Book   @relation(fields: [bookId], references: [id])
+  index  Int
+  text   String
+
+  @@unique([bookId, index])
+}
+
+model Note {
+  id          Int      @id @default(autoincrement())
+  bookId      Int
+  book        Book     @relation(fields: [bookId], references: [id])
+  guestId     String?
+  name        String
+  note        String
+  helpful     Int      @default(0)
+  createdAt   DateTime @default(now())
+  helpfulBy   NoteHelpful[]
+}
+
+model NoteHelpful {
+  id      Int    @id @default(autoincrement())
+  noteId  Int
+  note    Note   @relation(fields: [noteId], references: [id])
+  guestId String
+
+  @@unique([noteId, guestId])
+}
+
+model Save {
+  id      Int    @id @default(autoincrement())
+  bookId  Int
+  book    Book   @relation(fields: [bookId], references: [id])
+  guestId String
+
+  @@unique([bookId, guestId])
+}
+
+model Bookmark {
+  id      Int    @id @default(autoincrement())
+  bookId  Int
+  book    Book   @relation(fields: [bookId], references: [id])
+  guestId String
+  spread  Int
+
+  @@unique([bookId, guestId, spread])
+}
+
+model Report {
+  id        Int      @id @default(autoincrement())
+  bookId    Int
+  book      Book     @relation(fields: [bookId], references: [id])
+  guestId   String?
+  createdAt DateTime @default(now())
+}
+
+model Tip {
+  id        Int      @id @default(autoincrement())
+  bookId    Int
+  book      Book     @relation(fields: [bookId], references: [id])
+  guestId   String?
+  createdAt DateTime @default(now())
+}
+
+model Settings {
+  id           String  @id @default("singleton")
+  openStyle    String  @default("swing + zoom")
+  reduceMotion Boolean @default(false)
+  showBadges   Boolean @default(true)
+}

@@ -1,0 +1,257 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(24, 17, 9, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: osDimIn 0.25s ease both;
+}
+
+.sheet {
+  width: min(780px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  background: #fbf9f5;
+  border-radius: 18px;
+  box-shadow: 0 60px 120px -30px rgba(0, 0, 0, 0.6);
+  animation: osModalIn 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  position: relative;
+}
+
+.top {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding: 38px 40px 30px;
+}
+
+.coverColumn {
+  flex-shrink: 0;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cover {
+  position: relative;
+  width: 196px;
+  border-radius: 3px 7px 7px 3px;
+  box-shadow:
+    inset 8px 0 14px -6px rgba(0, 0, 0, 0.35),
+    inset -3px 0 5px rgba(255, 255, 255, 0.16),
+    0 24px 28px -16px rgba(45, 32, 12, 0.5);
+}
+
+.spine3d {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  background: rgba(0, 0, 0, 0.16);
+  border-radius: 3px 0 0 3px;
+}
+
+.coverBand {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0 0 7px 3px;
+}
+
+.coverFrame {
+  position: absolute;
+  inset: 11px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.coverContent {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 20px 22px 30px;
+}
+
+.coverAuthor {
+  margin-top: auto;
+  font-size: 10.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.ledge {
+  width: 250px;
+  max-width: 100%;
+  height: 12px;
+  background: linear-gradient(#5c422b, #3e2b1a);
+  border-radius: 2px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 3px 0 #2e1f12,
+    0 18px 22px -14px rgba(40, 25, 10, 0.55);
+}
+
+.info {
+  flex: 1;
+  min-width: 260px;
+}
+
+.badge {
+  display: inline-flex;
+  padding: 4px 11px;
+  border: 1px solid rgba(28, 25, 21, 0.14);
+  border-radius: 999px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #57503f;
+  font-weight: 600;
+}
+
+.title {
+  font-family: var(--font-newsreader), serif;
+  font-weight: 440;
+  font-size: 30px;
+  line-height: 1.1;
+  margin: 14px 0 0;
+}
+
+.byline {
+  margin-top: 9px;
+  font-size: 13.5px;
+  color: #57503f;
+}
+
+.stats {
+  margin-top: 9px;
+  font-size: 12.5px;
+  color: #8a8276;
+}
+
+.description {
+  margin-top: 16px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: #4a443b;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.noTipReason {
+  margin-top: 12px;
+  font-size: 11.5px;
+  color: #a39b8d;
+}
+
+.guestbookSection {
+  padding: 0 40px 34px;
+}
+
+.guestbookInner {
+  border-top: 1px solid rgba(28, 25, 21, 0.08);
+  padding-top: 22px;
+}
+
+.guestbookHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.guestbookTitle {
+  font-family: var(--font-newsreader), serif;
+  font-weight: 480;
+  font-size: 18px;
+  margin: 0;
+}
+
+.guestbookSubtitle {
+  font-size: 11.5px;
+  color: #a39b8d;
+}
+
+.noteList {
+  display: flex;
+  flex-direction: column;
+  margin-top: 6px;
+}
+
+.note {
+  padding: 13px 2px;
+  border-bottom: 1px solid rgba(28, 25, 21, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.noteText {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #33302a;
+  font-family: var(--font-newsreader), serif;
+}
+
+.noteMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11.5px;
+  color: #8a8276;
+}
+
+.noteForm {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.noteInput {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  border: 1px solid rgba(28, 25, 21, 0.1);
+  border-radius: 999px;
+  padding: 0 18px;
+  font-size: 13.5px;
+  background: #fff;
+  outline: none;
+  color: #1c1915;
+}
+
+.reportRow {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.reportLink {
+  font-size: 11.5px;
+  color: #a39b8d;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(28, 25, 21, 0.15);
+  padding-bottom: 1px;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  font: inherit;
+}
+
+.reportLink:hover {
+  color: #57503f;
+}

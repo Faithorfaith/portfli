@@ -1,0 +1,282 @@
+.page {
+  min-height: 100vh;
+  background: #ede8df;
+  display: flex;
+  flex-direction: column;
+  animation: osFadeUp 0.4s ease both;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 26px;
+}
+
+.backLink {
+  font-size: 13px;
+  color: #6e675c;
+  cursor: pointer;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: #1c1915;
+}
+
+.headerRight {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  font-size: 12.5px;
+  color: #6e675c;
+  white-space: nowrap;
+}
+
+.bookmarkToggle {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font: inherit;
+}
+
+.bookmarkToggle:hover {
+  color: #1c1915;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 6px 16px 20px;
+}
+
+.arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(28, 25, 21, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font-size: 17px;
+  color: #57503f;
+  flex-shrink: 0;
+}
+
+.spreadWrap {
+  position: relative;
+  width: min(960px, calc(100vw - 150px));
+  perspective: 2400px;
+}
+
+.spreadInner {
+  display: flex;
+  box-shadow: 0 42px 80px -40px rgba(60, 45, 20, 0.5);
+  border-radius: 6px;
+}
+
+.leftPage {
+  flex: 1;
+  min-width: 0;
+  background: #fbf7ef;
+  border-radius: 6px 1px 1px 6px;
+  min-height: min(620px, 72vh);
+  padding: 50px 46px 36px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: inset -28px 0 34px -30px rgba(60, 45, 20, 0.3);
+}
+
+.rightPage {
+  flex: 1;
+  min-width: 0;
+  background: #fbf7ef;
+  border-radius: 1px 6px 6px 1px;
+  min-height: min(620px, 72vh);
+  padding: 50px 46px 36px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  box-shadow: inset 28px 0 34px -30px rgba(60, 45, 20, 0.3);
+}
+
+.chapterLabel {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #8a8276;
+  text-align: center;
+  margin: 22px 0 10px;
+}
+
+.chapterTitle {
+  font-family: var(--font-newsreader), serif;
+  font-weight: 460;
+  font-size: 29px;
+  text-align: center;
+  margin: 0 0 26px;
+}
+
+.pageText {
+  font-family: var(--font-newsreader), serif;
+  font-size: 16.5px;
+  line-height: 1.78;
+  color: #33302a;
+  white-space: pre-line;
+  flex: 1;
+  overflow: hidden;
+}
+
+.pageNum {
+  text-align: center;
+  font-size: 11px;
+  color: #a39b8d;
+  margin-top: 20px;
+}
+
+.flipPage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  transform-origin: left center;
+  animation: osPageFlip 0.55s cubic-bezier(0.45, 0.1, 0.3, 1) forwards;
+  background: #fbf7ef;
+  border-radius: 1px 6px 6px 1px;
+  padding: 50px 46px 36px;
+  backface-visibility: hidden;
+  overflow: hidden;
+  box-shadow:
+    inset 28px 0 34px -30px rgba(60, 45, 20, 0.3),
+    -12px 0 26px -12px rgba(60, 45, 20, 0.4);
+}
+
+.backCover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  animation: osFadeUp 0.55s ease both;
+  padding: 10px 0;
+}
+
+.backCoverCard {
+  position: relative;
+  width: min(320px, 78vw);
+  height: min(480px, 64vh);
+  border-radius: 8px 3px 3px 8px;
+  box-shadow:
+    inset -10px 0 16px -8px rgba(0, 0, 0, 0.35),
+    inset 3px 0 5px rgba(255, 255, 255, 0.14),
+    0 40px 70px -30px rgba(45, 32, 12, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 44px 36px 32px;
+}
+
+.backCoverSpine {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 11px;
+  background: rgba(0, 0, 0, 0.16);
+  border-radius: 0 3px 3px 0;
+}
+
+.backCoverFrame {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.theEnd {
+  font-family: var(--font-newsreader), serif;
+  font-style: italic;
+  font-size: 22px;
+  opacity: 0.92;
+}
+
+.rule {
+  width: 36px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.4;
+  margin: 18px 0 22px;
+}
+
+.backCoverDesc {
+  font-family: var(--font-newsreader), serif;
+  font-size: 14.5px;
+  line-height: 1.65;
+  opacity: 0.85;
+  overflow: hidden;
+}
+
+.backCoverByline {
+  margin-top: auto;
+  font-size: 9.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.backCoverActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 0 20px 24px;
+}
+
+.progressTrack {
+  width: min(420px, 80%);
+  height: 2px;
+  background: rgba(28, 25, 21, 0.1);
+  border-radius: 2px;
+}
+
+.progressFill {
+  height: 100%;
+  background: #141210;
+  border-radius: 2px;
+  transition: width 0.4s;
+}
+
+.footerLinks {
+  display: flex;
+  gap: 24px;
+  font-size: 12px;
+  color: #8a8276;
+}
+
+.footerLink {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  padding: 0;
+}
+
+.footerLink:hover {
+  color: #1c1915;
+}

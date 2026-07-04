@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#F6F3ED;}
+*,*::before,*::after{box-sizing:border-box;}
+input,button{font-family:inherit;}
+@keyframes osFadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes osOverlaySeq{0%{opacity:0}10%{opacity:1}80%{opacity:1}100%{opacity:0}}
+@keyframes osBookGrow{0%{transform:scale(.45) translateY(50px)}42%{transform:scale(1) translateY(0)}100%{transform:scale(2.1) translateY(0)}}
+@keyframes osBookZoom{0%{transform:scale(.45) translateY(50px)}42%{transform:scale(1) translateY(0)}100%{transform:scale(2.7)}}
+@keyframes osCoverOpen{0%{transform:rotateY(0)}40%{transform:rotateY(0)}100%{transform:rotateY(-152deg)}}
+@keyframes osCoverStay{0%{transform:rotateY(0)}100%{transform:rotateY(0)}}
+@keyframes osPageFlip{0%{transform:rotateY(0)}100%{transform:rotateY(-178deg)}}
+@keyframes osToast{0%{opacity:0;transform:translate(-50%,10px)}12%{opacity:1;transform:translate(-50%,0)}82%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-4px)}}
+</style>
+</helmet>
+<div style="font-family:'Instrument Sans',system-ui,sans-serif; color:#1C1915; min-height:100vh;">
+
+  <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed; top:16px; left:50%; transform:translateX(-50%); width:min(1180px, calc(100vw - 32px)); z-index:60; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:8px 8px 8px 22px; background:rgba(252,250,246,.88); backdrop-filter:blur(14px); border:1px solid rgba(28,25,21,.07); border-radius:999px; box-shadow:0 12px 30px -18px rgba(50,40,20,.25);">
+      <div style="display:flex; align-items:baseline; gap:26px; min-width:0;">
+        <div onClick="{{ goHome }}" style="font-family:'Newsreader',serif; font-size:20px; font-weight:500; cursor:pointer; white-space:nowrap;">Open shelf</div>
+        <div style="display:flex; gap:18px; font-size:13px; color:#8A8276; flex-wrap:wrap;">
+          <span onClick="{{ goHome }}" style="color:#1C1915; cursor:pointer;">Shelf</span>
+          <span onClick="{{ toastSoon }}" style="cursor:pointer;" style-hover="color:#1C1915;">Search</span>
+          <span onClick="{{ toastSoon }}" style="cursor:pointer;" style-hover="color:#1C1915;">Rewards</span>
+          <span onClick="{{ toastSoon }}" style="cursor:pointer;" style-hover="color:#1C1915;">Profile</span>
+        </div>
+      </div>
+      <button onClick="{{ toastSubmit }}" style="background:#141210; color:#FBF9F5; border:none; border-radius:999px; padding:12px 22px; font-size:13.5px; font-weight:500; cursor:pointer; white-space:nowrap;" style-hover="background:#2E2A24;">Submit a book</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="Shelf / Home" style="animation:osFadeUp .5s ease both;">
+      <div style="padding:150px 24px 0; text-align:center;">
+        <h1 style="font-family:'Newsreader',serif; font-weight:420; font-size:clamp(34px,5vw,52px); line-height:1.08; margin:0 auto; max-width:640px; letter-spacing:-0.01em;">A calm shelf of books, free to read.</h1>
+        <p style="font-size:15px; color:#8A8276; max-width:440px; margin:16px auto 0; line-height:1.6;">Every book here was submitted by a reader and reviewed before it earned its place on the shelf.</p>
+      </div>
+      <div style="display:flex; justify-content:center; padding:34px 24px 0;">
+        <input placeholder="Search books, authors, shelves…" style="width:min(560px,100%); height:54px; border:1px solid rgba(28,25,21,.06); border-radius:999px; padding:0 26px; font-size:14.5px; background:#FFFFFF; box-shadow:0 18px 40px -24px rgba(60,45,20,.28); outline:none; color:#1C1915;">
+      </div>
+      <div style="width:min(1180px,100%); margin:0 auto; padding:90px 24px 100px; display:flex; flex-direction:column; gap:92px;">
+        <sc-for list="{{ shelves }}" as="shelf" hint-placeholder-count="2">
+          <div>
+            <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; padding:0 4px;">
+              <div style="display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;">
+                <h2 style="font-family:'Newsreader',serif; font-weight:480; font-size:25px; margin:0;">{{ shelf.label }}</h2>
+                <span style="font-size:13px; color:#8A8276;">{{ shelf.desc }}</span>
+              </div>
+              <div style="display:flex; align-items:baseline; gap:16px; font-size:12.5px; color:#8A8276;">
+                <span>{{ shelf.count }}</span>
+                <span onClick="{{ toastSoon }}" style="color:#1C1915; cursor:pointer; border-bottom:1px solid rgba(28,25,21,.3); padding-bottom:1px;">View all</span>
+              </div>
+            </div>
+            <div style="margin-top:8px;">
+              <div style="display:flex; align-items:flex-end; gap:36px; padding:24px 30px 0; overflow-x:auto;">
+                <sc-for list="{{ shelf.books }}" as="book" hint-placeholder-count="5">
+                  <div onClick="{{ book.open }}" onMouseEnter="{{ book.enter }}" onMouseLeave="{{ leaveBook }}" style="position:relative; flex-shrink:0; width:{{ book.w }}px; height:{{ book.h }}px; border-radius:2px 5px 5px 2px; background:{{ book.bg }}; color:{{ book.ink }}; cursor:pointer; transition:transform .35s cubic-bezier(.2,.7,.3,1.1); box-shadow:inset 6px 0 10px -4px rgba(0,0,0,.35), inset -2px 0 3px rgba(255,255,255,.16), 0 16px 16px -12px rgba(45,32,12,.5);" style-hover="transform:translateY(-13px) rotate(-1.2deg);">
+                    <div style="position:absolute; left:0; top:0; bottom:0; width:7px; background:rgba(0,0,0,.16); border-radius:2px 0 0 2px;"></div>
+                    <div style="position:absolute; left:0; right:0; bottom:0; height:{{ book.band }}px; background:{{ book.accent }}; border-radius:0 0 5px 2px;"></div>
+                    <div style="position:absolute; inset:8px; border:1px solid currentColor; opacity:{{ book.frameOp }}; border-radius:2px; pointer-events:none;"></div>
+                    <div style="position:relative; height:100%; display:flex; flex-direction:column; padding:16px 13px 14px 19px; text-align:{{ book.align }};">
+                      <div style="font-family:'Newsreader',serif; font-weight:{{ book.tw }}; font-size:{{ book.ts }}px; line-height:1.16; margin-top:{{ book.tt }}px; font-style:{{ book.tstyle }};">{{ book.t }}</div>
+                      <div style="margin-top:auto; font-size:9px; letter-spacing:.14em; text-transform:uppercase; opacity:.72;">{{ book.a }}</div>
+                    </div>
+                    <sc-if value="{{ badgesOn }}" hint-placeholder-val="{{ false }}">
+                      <div style="position:absolute; top:8px; right:8px; background:rgba(252,250,245,.92); color:#57503F; font-size:8px; letter-spacing:.08em; text-transform:uppercase; padding:3px 7px; border-radius:999px; font-weight:600;">{{ book.badge }}</div>
+                    </sc-if>
+                    <div style="position:absolute; inset:0; border-radius:2px 5px 5px 2px; display:flex; flex-direction:column; justify-content:flex-end; padding:12px 12px 11px; background:linear-gradient(rgba(16,13,8,0) 40%, rgba(16,13,8,.84)); color:#FBF9F5; opacity:{{ book.hoverOp }}; pointer-events:{{ book.hoverPe }}; transition:opacity .25s;">
+                      <div style="font-size:12px; font-weight:600; line-height:1.25;">{{ book.t }}</div>
+                      <div style="font-size:10.5px; opacity:.75; margin-top:2px;">{{ book.a }}</div>
+                      <div style="display:flex; gap:12px; margin-top:9px; font-size:11px; font-weight:600;">
+                        <span onClick="{{ book.read }}" style="border-bottom:1px solid rgba(251,249,245,.5); padding-bottom:1px;">Read</span>
+                        <span style="border-bottom:1px solid rgba(251,249,245,.5); padding-bottom:1px;">Details</span>
+                      </div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="height:15px; background:linear-gradient(#CBA679, #A37E50); border-radius:2px; box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 3px 0 #8B6842, 0 26px 30px -18px rgba(70,50,25,.55);"></div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="text-align:center; padding:0 24px 70px; font-size:12.5px; color:#A39B8D;">Reviewed by librarians · Free to read · OpenShelf</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Book Detail" style="animation:osFadeUp .45s ease both; padding:130px 24px 110px;">
+      <div style="width:min(1020px,100%); margin:0 auto;">
+        <span onClick="{{ goHome }}" style="font-size:13px; color:#8A8276; cursor:pointer;" style-hover="color:#1C1915;">← Back to the shelf</span>
+        <div style="display:flex; gap:64px; flex-wrap:wrap; margin-top:44px;">
+          <div style="flex-shrink:0; margin:0 auto; display:flex; flex-direction:column; align-items:center;">
+            <div style="position:relative; width:252px; height:{{ dBook.bigH }}px; border-radius:3px 8px 8px 3px; background:{{ dBook.bg }}; color:{{ dBook.ink }}; box-shadow:inset 10px 0 16px -6px rgba(0,0,0,.35), inset -3px 0 5px rgba(255,255,255,.16), 0 26px 30px -18px rgba(45,32,12,.5);">
+              <div style="position:absolute; left:0; top:0; bottom:0; width:13px; background:rgba(0,0,0,.16); border-radius:3px 0 0 3px;"></div>
+              <div style="position:absolute; left:0; right:0; bottom:0; height:{{ dBook.bigBand }}px; background:{{ dBook.accent }}; border-radius:0 0 8px 3px;"></div>
+              <div style="position:absolute; inset:14px; border:1px solid currentColor; opacity:{{ dBook.frameOp }}; border-radius:2px;"></div>
+              <div style="position:relative; height:100%; display:flex; flex-direction:column; padding:32px 26px 28px 38px; text-align:{{ dBook.align }};">
+                <div style="font-family:'Newsreader',serif; font-weight:{{ dBook.tw }}; font-size:{{ dBook.bigTs }}px; line-height:1.16; margin-top:{{ dBook.bigTt }}px; font-style:{{ dBook.tstyle }};">{{ dBook.t }}</div>
+                <div style="margin-top:auto; font-size:12px; letter-spacing:.16em; text-transform:uppercase; opacity:.72;">{{ dBook.a }}</div>
+              </div>
+            </div>
+            <div style="width:330px; max-width:100%; height:13px; margin-top:0; background:linear-gradient(#CBA679, #A37E50); border-radius:2px; box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 3px 0 #8B6842, 0 22px 26px -16px rgba(70,50,25,.55);"></div>
+          </div>
+          <div style="flex:1; min-width:300px;">
+            <div style="display:inline-flex; padding:5px 12px; border:1px solid rgba(28,25,21,.14); border-radius:999px; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:#57503F; font-weight:600;">{{ dBook.badge }}</div>
+            <h1 style="font-family:'Newsreader',serif; font-weight:440; font-size:clamp(32px,4vw,44px); line-height:1.06; margin:18px 0 0;">{{ dBook.t }}</h1>
+            <div style="margin-top:12px; font-size:14.5px; color:#57503F;">by {{ dBook.a }} · {{ dBook.shelfLabel }}</div>
+            <div style="margin-top:12px; font-size:13px; color:#8A8276;">{{ dBook.stats }}</div>
+            <p style="margin-top:22px; font-size:15.5px; line-height:1.7; color:#4A443B; max-width:520px;">{{ dBook.desc }}</p>
+            <div style="display:flex; gap:12px; margin-top:30px; flex-wrap:wrap; align-items:center;">
+              <button onClick="{{ readCurrent }}" style="background:#141210; color:#FBF9F5; border:none; border-radius:999px; padding:14px 28px; font-size:14px; font-weight:500; cursor:pointer;" style-hover="background:#2E2A24;">Read book</button>
+              <button onClick="{{ toggleSave }}" style="background:transparent; border:1px solid rgba(28,25,21,.18); border-radius:999px; padding:13px 24px; font-size:14px; cursor:pointer; color:#1C1915;" style-hover="border-color:#1C1915;">{{ saveLabel }}</button>
+              <sc-if value="{{ dBook.tip }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ tipOwner }}" style="background:transparent; border:1px solid rgba(28,25,21,.18); border-radius:999px; padding:13px 24px; font-size:14px; cursor:pointer; color:#1C1915;" style-hover="border-color:#1C1915;">Tip the author</button>
+              </sc-if>
+            </div>
+            <sc-if value="{{ dBook.noTip }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:16px; font-size:12px; color:#A39B8D;">{{ dBook.noTipReason }}</div>
+            </sc-if>
+          </div>
+        </div>
+
+        <div style="max-width:640px; margin-top:96px;">
+          <h2 style="font-family:'Newsreader',serif; font-weight:480; font-size:23px; margin:0;">Guestbook</h2>
+          <div style="font-size:13px; color:#8A8276; margin-top:6px;">Notes left by readers who passed through.</div>
+          <div style="display:flex; flex-direction:column; margin-top:24px; border-top:1px solid rgba(28,25,21,.08);">
+            <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
+              <div style="padding:18px 2px; border-bottom:1px solid rgba(28,25,21,.08); display:flex; flex-direction:column; gap:7px;">
+                <div style="font-size:15px; line-height:1.6; color:#33302A; font-family:'Newsreader',serif;">{{ n.note }}</div>
+                <div style="display:flex; justify-content:space-between; gap:12px; font-size:12px; color:#8A8276;">
+                  <span>— {{ n.name }}</span>
+                  <span onClick="{{ n.markHelpful }}" style="cursor:pointer;" style-hover="color:#1C1915;">Helpful · {{ n.helpful }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex; gap:10px; margin-top:22px;">
+            <input value="{{ noteText }}" onChange="{{ setNote }}" placeholder="Leave a short note…" style="flex:1; min-width:0; height:48px; border:1px solid rgba(28,25,21,.1); border-radius:999px; padding:0 20px; font-size:14px; background:#fff; outline:none; color:#1C1915;">
+            <button onClick="{{ addNote }}" style="background:transparent; border:1px solid rgba(28,25,21,.18); border-radius:999px; padding:0 22px; font-size:13.5px; cursor:pointer; color:#1C1915;" style-hover="border-color:#1C1915;">Add note</button>
+          </div>
+        </div>
+
+        <div style="margin-top:96px;">
+          <div style="display:flex; align-items:baseline; gap:14px; padding:0 4px;">
+            <h2 style="font-family:'Newsreader',serif; font-weight:480; font-size:23px; margin:0;">More from this shelf</h2>
+            <span style="font-size:13px; color:#8A8276;">{{ dBook.shelfLabel }}</span>
+          </div>
+          <div style="margin-top:4px;">
+            <div style="display:flex; align-items:flex-end; gap:36px; padding:24px 30px 0; overflow-x:auto;">
+              <sc-for list="{{ similar }}" as="book" hint-placeholder-count="4">
+                <div onClick="{{ book.open }}" onMouseEnter="{{ book.enter }}" onMouseLeave="{{ leaveBook }}" style="position:relative; flex-shrink:0; width:{{ book.w }}px; height:{{ book.h }}px; border-radius:2px 5px 5px 2px; background:{{ book.bg }}; color:{{ book.ink }}; cursor:pointer; transition:transform .35s cubic-bezier(.2,.7,.3,1.1); box-shadow:inset 6px 0 10px -4px rgba(0,0,0,.35), inset -2px 0 3px rgba(255,255,255,.16), 0 16px 16px -12px rgba(45,32,12,.5);" style-hover="transform:translateY(-13px) rotate(-1.2deg);">
+                  <div style="position:absolute; left:0; top:0; bottom:0; width:7px; background:rgba(0,0,0,.16); border-radius:2px 0 0 2px;"></div>
+                  <div style="position:absolute; left:0; right:0; bottom:0; height:{{ book.band }}px; background:{{ book.accent }}; border-radius:0 0 5px 2px;"></div>
+                  <div style="position:absolute; inset:8px; border:1px solid currentColor; opacity:{{ book.frameOp }}; border-radius:2px; pointer-events:none;"></div>
+                  <div style="position:relative; height:100%; display:flex; flex-direction:column; padding:16px 13px 14px 19px; text-align:{{ book.align }};">
+                    <div style="font-family:'Newsreader',serif; font-weight:{{ book.tw }}; font-size:{{ book.ts }}px; line-height:1.16; margin-top:{{ book.tt }}px; font-style:{{ book.tstyle }};">{{ book.t }}</div>
+                    <div style="margin-top:auto; font-size:9px; letter-spacing:.14em; text-transform:uppercase; opacity:.72;">{{ book.a }}</div>
+                  </div>
+                  <div style="position:absolute; inset:0; border-radius:2px 5px 5px 2px; display:flex; flex-direction:column; justify-content:flex-end; padding:12px 12px 11px; background:linear-gradient(rgba(16,13,8,0) 40%, rgba(16,13,8,.84)); color:#FBF9F5; opacity:{{ book.hoverOp }}; pointer-events:{{ book.hoverPe }}; transition:opacity .25s;">
+                    <div style="font-size:12px; font-weight:600; line-height:1.25;">{{ book.t }}</div>
+                    <div style="font-size:10.5px; opacity:.75; margin-top:2px;">{{ book.a }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="height:15px; background:linear-gradient(#CBA679, #A37E50); border-radius:2px; box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 3px 0 #8B6842, 0 26px 30px -18px rgba(70,50,25,.55);"></div>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top:72px;">
+          <span onClick="{{ reportBook }}" style="font-size:12px; color:#A39B8D; cursor:pointer; border-bottom:1px solid rgba(28,25,21,.15); padding-bottom:1px;" style-hover="color:#57503F;">Report this book</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isReader }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Reader" style="min-height:100vh; background:#EDE8DF; display:flex; flex-direction:column; animation:osFadeUp .4s ease both;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; padding:18px 26px;">
+        <span onClick="{{ backToDetail }}" style="font-size:13px; color:#6E675C; cursor:pointer; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" style-hover="color:#1C1915;">← {{ dBook.t }}</span>
+        <div style="display:flex; gap:22px; align-items:center; font-size:12.5px; color:#6E675C; white-space:nowrap;">
+          <span>{{ pageLabel }}</span>
+          <span onClick="{{ toggleBookmark }}" style="cursor:pointer; color:{{ bmColor }};" style-hover="color:#1C1915;">{{ bmLabel }}</span>
+        </div>
+      </div>
+      <div style="flex:1; display:flex; align-items:center; justify-content:center; gap:18px; padding:6px 16px 20px;">
+        <button onClick="{{ prevPage }}" style="width:44px; height:44px; border-radius:999px; border:1px solid rgba(28,25,21,.12); background:rgba(255,255,255,.7); cursor:pointer; font-size:17px; color:#57503F; opacity:{{ prevOp }}; flex-shrink:0;">‹</button>
+        <div style="position:relative; width:min(960px, calc(100vw - 150px)); perspective:2400px;">
+          <div style="display:flex; box-shadow:0 42px 80px -40px rgba(60,45,20,.5); border-radius:6px;">
+            <div style="flex:1; min-width:0; background:#FBF7EF; border-radius:6px 1px 1px 6px; min-height:min(620px,72vh); padding:50px 46px 36px; display:flex; flex-direction:column; box-shadow:inset -28px 0 34px -30px rgba(60,45,20,.3);">
+              <sc-if value="{{ showChapter }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#8A8276; text-align:center; margin:22px 0 10px;">Chapter one</div>
+                <div style="font-family:'Newsreader',serif; font-weight:460; font-size:29px; text-align:center; margin:0 0 26px;">{{ dBook.t }}</div>
+              </sc-if>
+              <div style="font-family:'Newsreader',serif; font-size:16.5px; line-height:1.78; color:#33302A; white-space:pre-line; flex:1; overflow:hidden;">{{ leftText }}</div>
+              <div style="text-align:center; font-size:11px; color:#A39B8D; margin-top:20px;">{{ leftNum }}</div>
+            </div>
+            <div onClick="{{ nextPage }}" style="flex:1; min-width:0; background:#FBF7EF; border-radius:1px 6px 6px 1px; min-height:min(620px,72vh); padding:50px 46px 36px; display:flex; flex-direction:column; cursor:pointer; box-shadow:inset 28px 0 34px -30px rgba(60,45,20,.3);">
+              <div style="font-family:'Newsreader',serif; font-size:16.5px; line-height:1.78; color:#33302A; white-space:pre-line; flex:1; overflow:hidden;">{{ rightText }}</div>
+              <div style="text-align:center; font-size:11px; color:#A39B8D; margin-top:20px;">{{ rightNum }}</div>
+            </div>
+          </div>
+          <sc-if value="{{ flipping }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; top:0; right:0; width:50%; height:100%; transform-origin:left center; animation:osPageFlip .55s cubic-bezier(.45,.1,.3,1) forwards; background:#FBF7EF; border-radius:1px 6px 6px 1px; padding:50px 46px 36px; backface-visibility:hidden; overflow:hidden; box-shadow:inset 28px 0 34px -30px rgba(60,45,20,.3), -12px 0 26px -12px rgba(60,45,20,.4);">
+              <div style="font-family:'Newsreader',serif; font-size:16.5px; line-height:1.78; color:#33302A; white-space:pre-line;">{{ flipText }}</div>
+            </div>
+          </sc-if>
+        </div>
+        <button onClick="{{ nextPage }}" style="width:44px; height:44px; border-radius:999px; border:1px solid rgba(28,25,21,.12); background:rgba(255,255,255,.7); cursor:pointer; font-size:17px; color:#57503F; opacity:{{ nextOp }}; flex-shrink:0;">›</button>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:14px; padding:0 20px 24px;">
+        <div style="width:min(420px,80%); height:2px; background:rgba(28,25,21,.1); border-radius:2px;">
+          <div style="height:100%; width:{{ progressPct }}; background:#141210; border-radius:2px; transition:width .4s;"></div>
+        </div>
+        <div style="display:flex; gap:24px; font-size:12px; color:#8A8276;">
+          <span onClick="{{ backToDetail }}" style="cursor:pointer;" style-hover="color:#1C1915;">Leave a note</span>
+          <sc-if value="{{ dBook.tip }}" hint-placeholder-val="{{ false }}">
+            <span onClick="{{ tipOwner }}" style="cursor:pointer;" style-hover="color:#1C1915;">Tip the author</span>
+          </sc-if>
+          <span onClick="{{ reportBook }}" style="cursor:pointer;" style-hover="color:#1C1915;">Report</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ opening }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:100; background:#EDE8DF; display:flex; align-items:center; justify-content:center; animation:osOverlaySeq 1.5s ease forwards; pointer-events:none;">
+      <div style="perspective:2000px;">
+        <div style="position:relative; width:228px; height:338px; transform-style:preserve-3d; animation:{{ growAnim }} 1.5s cubic-bezier(.55,.05,.3,1) forwards;">
+          <div style="position:absolute; inset:0; background:#FBF7EF; border-radius:2px 6px 6px 2px; box-shadow:0 30px 60px -30px rgba(60,45,20,.6); padding:30px 24px;">
+            <div style="height:100%; opacity:.5; background-image:repeating-linear-gradient(rgba(51,48,42,.22) 0px, rgba(51,48,42,.22) 1px, transparent 1px, transparent 13px); background-position:0 8px; background-repeat:no-repeat; background-size:100% 82%;"></div>
+          </div>
+          <div style="position:absolute; inset:0; transform-origin:left center; animation:{{ coverAnim }} 1.5s cubic-bezier(.6,.05,.3,1) forwards; backface-visibility:hidden; background:{{ oBg }}; color:{{ oInk }}; border-radius:2px 6px 6px 2px; box-shadow:inset 6px 0 10px -4px rgba(0,0,0,.35); display:flex; flex-direction:column; padding:30px 22px 26px 30px; text-align:center;">
+            <div style="font-family:'Newsreader',serif; font-size:25px; line-height:1.16; margin-top:36px;">{{ oT }}</div>
+            <div style="margin-top:auto; font-size:10px; letter-spacing:.15em; text-transform:uppercase; opacity:.72;">{{ oA }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; bottom:30px; left:50%; z-index:120; background:#141210; color:#FBF9F5; font-size:13px; padding:12px 22px; border-radius:999px; animation:osToast 2.6s ease forwards; box-shadow:0 16px 40px -16px rgba(0,0,0,.4); pointer-events:none; white-space:nowrap;">{{ toastMsg }}</div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;openStyle&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;swing + zoom&quot;, &quot;zoom only&quot;], &quot;default&quot;: &quot;swing + zoom&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Motion&quot; },
+  &quot;reduceMotion&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Motion&quot; },
+  &quot;showBadges&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Shelf&quot; }
+}">
+class Component extends DCLogic {
+  state = {
+    view: 'home', bookId: null, hoverId: null, opening: null,
+    spread: 0, flip: false, flipText: '',
+    saved: {}, bookmarks: {}, noteText: '', extraNotes: {}, helpful: {},
+    toast: null
+  };
+
+  componentDidMount() {
+    this._key = (e) => {
+      if (this.state.view !== 'reader' || this.state.opening) return;
+      if (e.key === 'ArrowRight') this.next();
+      if (e.key === 'ArrowLeft') this.prev();
+    };
+    window.addEventListener('keydown', this._key);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this._key);
+    [this._t1, this._t2, this._tf, this._tt].forEach(clearTimeout);
+  }
+
+  // ---------- data ----------
+  static DIMS = [[118,178],[128,192],[120,172],[132,198],[122,182],[116,170]];
+  static STYLES = [
+    { align:'center', ts:16, tw:500, tt:26, tstyle:'normal', frameOp:.35, band:0 },
+    { align:'left',   ts:15, tw:600, tt:6,  tstyle:'normal', frameOp:0,   band:12 },
+    { align:'center', ts:15, tw:420, tt:40, tstyle:'italic', frameOp:0,   band:0 },
+    { align:'left',   ts:17, tw:500, tt:16, tstyle:'normal', frameOp:.28, band:0 }
+  ];
+
+  getShelves() {
+    if (this._shelves) return this._shelves;
+    const B = (id,t,a,badge,bg,ink,accent,st,dim,reads,saves,tips,desc) => {
+      const S = Component.STYLES[st], D = Component.DIMS[dim];
+      return { id,t,a,badge,bg,ink,accent,desc,reads,saves,tips,
+        ...S, w:D[0], h:D[1],
+        tip: badge==='Verified'||badge==='Original',
+        noTipReason: badge==='Public Domain' ? 'Public domain — tips are disabled for this book.'
+          : badge==='Free Licensed' ? 'Free licensed — tips are disabled for this book.' : '' };
+    };
+    this._shelves = [
+      { id:'featured', label:'Featured', desc:'Hand-picked by the librarians', books:[
+        B(1,'The Quiet Harbor','Nadia Osei','Original','#29524A','#F0E8D6','#C9A26B',0,0,12400,890,214,'A fishing town learns to keep its secrets after the lighthouse goes dark for exactly one hour — and the sea goes quiet with it.'),
+        B(2,'Letters from the Interior','M. J. Whitfield','Verified','#6B2F2A','#F5E4D3','#D9A05B',1,1,8900,610,158,'Twelve years of letters between two sisters, one of whom never left home. A slow correspondence about distance, weather, and what gets said last.'),
+        B(3,'A Field Guide to Slow Mornings','Tomas Lindgren','Free Licensed','#D8C49A','#3A2F1B','#A65A41',3,2,15200,1300,0,'Essays on coffee, windows, and doing one thing at a time. Freely licensed by the author for any quiet room.'),
+        B(4,'The Cartographer\u2019s Daughter','Elena Marsh','Verified','#23395B','#E6E1D3','#C9A26B',2,3,7100,540,96,'She inherited every map her father ever drew — and the one he hid. A story about the places that refuse to be charted.'),
+        B(5,'Small Rituals','Priya Raman','Original','#C08A3E','#2E2412','#FBF6EA',1,4,10800,970,187,'Notes on the tiny ceremonies that hold a day together: the first cup, the last light, the walk that goes nowhere on purpose.'),
+        B(6,'The Glass Orchard','Samuel Adeyemi','Verified','#4A3350','#EFE2ED','#C9A26B',0,5,6300,410,74,'A family estate, a greenhouse of rare fruit, and a will nobody expected. Three siblings return home to divide what cannot be divided.')
+      ]},
+      { id:'new', label:'New Arrivals', desc:'Approved this week', books:[
+        B(7,'Notes on Rain','Harriet Blume','Original','#5B7A99','#F1EEE6','#C9A26B',2,1,900,120,18,'A season of weather diaries from a town where it rains two hundred days a year, and nobody would live anywhere else.'),
+        B(8,'The Borrowed House','Ade Bakare','Verified','#A65A41','#F7E9DC','#3A2F1B',0,3,1400,210,32,'A caretaker moves into a house between owners and finds the previous lives still folded into the cupboards.'),
+        B(9,'The Arithmetic of Birds','Cecilia Ortiz','Free Licensed','#5A5F3C','#EFEADA','#C9A26B',3,0,760,90,0,'Counting starlings taught her more about crowds than any city did. Field notes from ten years of looking up.'),
+        B(10,'Midnight Ferry','Jonas Keller','Original','#2E2B28','#E8E1D2','#C9A26B',1,2,1100,160,26,'The last crossing of the night carries the same seven passengers all winter. None of them will say why.'),
+        B(11,'The Gardener\u2019s Almanac','Rose Whitcombe','Free Licensed','#7D8C6F','#F2F0E6','#3A2F1B',0,4,650,80,0,'A year in a walled garden, month by month, written for people who kill houseplants and want to stop.'),
+        B(12,'Paper Boats','Lena Okafor','Verified','#EFE6D2','#3B3428','#A65A41',1,5,980,140,21,'Short stories set along one river, each one launched from the same bridge, each one landing somewhere new.')
+      ]},
+      { id:'mostread', label:'Most Read', desc:'What the town keeps returning to', books:[
+        B(13,'How to Read a River','Whit Emerson','Original','#2F4A38','#EDE8D8','#C9A26B',3,1,31000,2400,412,'Currents, eddies, and the slow art of standing still in moving water. The shelf\u2019s most-finished book two years running.'),
+        B(14,'The Long Table','Marguerite Deniau','Verified','#96432E','#F6E7DC','#D9A05B',0,0,27400,2100,388,'Forty years of one family\u2019s Sunday lunches, told through the chairs that were added and the ones left empty.'),
+        B(15,'Salt & Season','Ama Boateng','Original','#CBB07E','#33291A','#96432E',1,3,24800,1900,301,'A cook\u2019s memoir in twelve meals, from a coastal kitchen where the menu is whatever the morning boats bring in.'),
+        B(16,'The Night Librarian','Theo Brandt','Verified','#202B45','#E4E0D2','#C9A26B',2,2,22300,1700,264,'The library closes at nine. What gets shelved after that is another matter entirely.'),
+        B(17,'Walking Home','Ines Duarte','Free Licensed','#7B7294','#F0EDF3','#33291A',0,5,19600,1500,0,'One woman, one coastline, seven hundred kilometres on foot. An account of what falls away when you slow to walking pace.'),
+        B(18,'Common Threads','David Achebe','Original','#4E6E81','#EDEFEA','#C9A26B',3,4,18200,1400,229,'Interviews with the tailors, menders, and weavers of one market street, and the century of cloth that passed through their hands.')
+      ]},
+      { id:'classics', label:'Public Domain Classics', desc:'Old friends, free forever', books:[
+        B(19,'Meditations','Marcus Aurelius','Public Domain','#A99877','#2F2A20','#6B2F2A',0,2,45000,3800,0,'The private notebook of a Roman emperor: reminders to himself about patience, mortality, and getting out of bed.'),
+        B(20,'Persuasion','Jane Austen','Public Domain','#7A3B47','#F2E5D9','#C9A26B',2,0,38000,3100,0,'Eight years after refusing him, Anne Elliot meets Captain Wentworth again. Austen\u2019s last and quietest novel.'),
+        B(21,'Walden','Henry David Thoreau','Public Domain','#3E5641','#EAE6D4','#C9A26B',0,3,41000,3300,0,'Two years in a cabin by a pond, and the case for living deliberately. Still the shelf\u2019s most-bookmarked book.'),
+        B(22,'The Awakening','Kate Chopin','Public Domain','#55707D','#EEEAE0','#C9A26B',2,4,26000,2000,0,'A summer on Grand Isle unsettles everything Edna Pontellier thought she had agreed to.'),
+        B(23,'Sonnets','William Shakespeare','Public Domain','#34302B','#E4D9BF','#C9A26B',0,5,52000,4600,0,'A hundred and fifty-four poems on love, time, and the strange business of being remembered.'),
+        B(24,'The Prophet','Kahlil Gibran','Public Domain','#8A6D3B','#F4EAD6','#2F2A20',2,1,36000,2900,0,'Before leaving the city of Orphalese, Almustafa answers the people\u2019s questions — on love, work, joy, and sorrow.')
+      ]}
+    ];
+    return this._shelves;
+  }
+
+  static NOTES = [
+    { name:'A quiet reader', note:'Read this in two sittings by the window. It stays with you.', helpful:12 },
+    { name:'Amara', note:'\u201cWe kept the small hours like coins.\u201d Underlining everything.', helpful:9 },
+    { name:'J.', note:'Slow in the best way.', helpful:5 },
+    { name:'Bea', note:'Recommended by a stranger on shelf three. They were right.', helpful:14 },
+    { name:'An old friend', note:'The chapter on winter alone is worth the visit.', helpful:7 },
+    { name:'T. O.', note:'Left a bookmark here so I remember to come back.', helpful:3 }
+  ];
+
+  static PAGES = [
+    'The harbor kept its own hours. Long before the first ferry cleared the breakwater, the town was awake in its quiet way \u2014 kettles on, lamps low, the gulls rehearsing over the fish stalls.\n\nMara had learned to tell the weather by the sound of the ropes against the masts. Today they rang slow and even, which meant a kind sea, which meant her father would be late.',
+    'He was always late on kind days. The sea forgave him nothing in winter, so in summer he took his time, letting the boat drift the last hundred yards as if arriving were a thing best done gently.\n\nFrom the window of the chandlery she watched the water take its color from the sky \u2014 grey first, then pewter, then a pale gold that no one had ever managed to paint honestly. The tourists tried every August. They left with canvases the color of egg yolk, and the town let them go with kindness.\n\nShe opened the ledger and began the day\u2019s small arithmetic.',
+    'The bell above the door announced Mr. Abel, who did not buy anything and never had. He came for the chair by the stove and the right to an opinion about the weather.\n\n\u201cRain by Thursday,\u201d he said, settling in.\n\n\u201cThe ropes say otherwise.\u201d\n\n\u201cThe ropes are optimists.\u201d He unfolded his newspaper, which was four days old and better for it. News, he liked to say, improved with keeping, like anything pickled.\n\nOutside, the ferry sounded its horn \u2014 once, politely, the way it did when the harbormaster\u2019s dog was asleep on the ramp again.',
+    'By ten the fog had given up its argument with the sun and gone off to sulk beyond the point. The quay filled with the usual commerce: crates of ice, coils of rope, rumors.\n\nThe rumor that morning concerned the lighthouse. It had gone dark on Tuesday for the better part of an hour, and no one \u2014 not the keeper, not the electric board, not Mr. Abel, who held theories the way other men held mortgages \u2014 could say why.\n\n\u201cAn hour is nothing,\u201d said the keeper, when pressed.\n\n\u201cAn hour is an hour,\u201d said the town, which had been navigating by that light for ninety years.',
+    'Mara\u2019s father came in on the noon tide with a thin catch and a thick silence. She knew the silence. It was the one he wore when he had seen something on the water he did not intend to discuss on land.\n\nShe let him unload. She let him coil the lines and hose the deck and hang his oilskins on the hook that had held them for thirty years. Then she put a mug of tea in his hands and waited, because waiting was the only net that ever caught him.',
+    '\u201cThe light,\u201d he said at last. \u201cTuesday night. We were off the point when it went.\u201d\n\n\u201cAnd?\u201d\n\n\u201cAnd the sea went with it.\u201d He turned the mug in his hands. \u201cNot the water. The sound of it. A whole minute, maybe two, quiet as a held breath. Birds up off the stacks all at once, and then the light came back and the sea came back, and nobody on that boat has said a word about it since.\u201d\n\nThe stove ticked. Somewhere out on the quay a crate was set down harder than it needed to be.',
+    'It is a particular talent of small towns to hold a mystery gently \u2014 to pass it hand to hand like a warm loaf, everyone taking a piece, no one taking the whole.\n\nBy evening the story had grown three versions and lost none of them. The schoolteacher favored instruments; the priest favored patience; Mr. Abel favored a theory involving the electric board, the county, and a heron with a grudge.\n\nMara wrote the day into the ledger the way her grandmother had taught her: fish, weights, weather. Then, in the margin, in pencil: the sea held its breath.',
+    'Her father slept early. The town slept late. The lighthouse turned its long spoke of light over the water, steady as arithmetic, as if embarrassed by Tuesday and keen to make it up.\n\nMara sat on the chandlery step with the last of the tea and watched the beam go round. Somewhere beyond the breakwater the sea moved in its dark bed, keeping whatever it kept.\n\nTomorrow there would be ropes to sell and a ledger to fill, and Mr. Abel\u2019s rain, or not. Tonight there was only the light, counting the harbor over and over, and finding it \u2014 every pass \u2014 exactly where it had been left.'
+  ];
+
+  // ---------- navigation ----------
+  findBook(id) {
+    for (const s of this.getShelves()) {
+      const b = s.books.find(b => b.id === id);
+      if (b) return { book: b, shelf: s };
+    }
+    return null;
+  }
+  setView(v, extra) {
+    this.setState(Object.assign({ view: v, hoverId: null }, extra || {}));
+    window.scrollTo(0, 0);
+  }
+  openDetail(id) { this.setView('detail', { bookId: id }); }
+  beginRead(id) {
+    if (this.props.reduceMotion) { this.setView('reader', { bookId: id, spread: 0 }); return; }
+    const f = this.findBook(id);
+    this.setState({ opening: f.book, bookId: id });
+    clearTimeout(this._t1); clearTimeout(this._t2);
+    this._t1 = setTimeout(() => { this.setState({ view: 'reader', spread: 0, hoverId: null }); window.scrollTo(0, 0); }, 950);
+    this._t2 = setTimeout(() => this.setState({ opening: null }), 1500);
+  }
+  next() {
+    const max = Math.ceil(Component.PAGES.length / 2) - 1;
+    if (this.state.flip || this.state.spread >= max) return;
+    const old = Component.PAGES[this.state.spread * 2 + 1] || '';
+    this.setState({ flip: true, flipText: old, spread: this.state.spread + 1 });
+    clearTimeout(this._tf);
+    this._tf = setTimeout(() => this.setState({ flip: false }), 560);
+  }
+  prev() { if (!this.state.flip && this.state.spread > 0) this.setState({ spread: this.state.spread - 1 }); }
+  showToast(msg) {
+    clearTimeout(this._tt);
+    this.setState({ toast: null });
+    this._tt = setTimeout(() => {
+      this.setState({ toast: msg });
+      this._tt = setTimeout(() => this.setState({ toast: null }), 2600);
+    }, 30);
+  }
+
+  deco(b) {
+    const s = this.state;
+    return Object.assign({}, b, {
+      open: () => this.openDetail(b.id),
+      read: (e) => { e.stopPropagation(); this.beginRead(b.id); },
+      enter: () => this.setState({ hoverId: b.id }),
+      hoverOp: s.hoverId === b.id ? 1 : 0,
+      hoverPe: s.hoverId === b.id ? 'auto' : 'none'
+    });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const shelvesData = this.getShelves();
+    const fmt = n => n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k' : '' + n;
+
+    const shelves = shelvesData.map(sh => Object.assign({}, sh, {
+      count: sh.books.length + ' books',
+      books: sh.books.map(b => this.deco(b))
+    }));
+
+    // current book
+    const found = s.bookId ? this.findBook(s.bookId) : null;
+    let dBook = null, similar = [], notes = [];
+    if (found) {
+      const b = found.book;
+      dBook = Object.assign({}, this.deco(b), {
+        shelfLabel: found.shelf.label,
+        stats: fmt(b.reads) + ' reads \u00b7 ' + fmt(b.saves) + ' saves' + (b.tip ? ' \u00b7 ' + fmt(b.tips) + ' tips' : ''),
+        noTip: !b.tip,
+        bigH: Math.round(b.h * 1.95),
+        bigTs: Math.round(b.ts * 1.9),
+        bigTt: Math.round(b.tt * 1.9),
+        bigBand: b.band ? Math.round(b.band * 1.8) : 0
+      });
+      similar = found.shelf.books.filter(x => x.id !== b.id).slice(0, 5).map(x => this.deco(x));
+      const base = [0, 1, 2].map(i => {
+        const idx = (b.id + i * 2) % Component.NOTES.length;
+        const n = Component.NOTES[idx];
+        const key = b.id + '-' + idx;
+        const bump = s.helpful[key] || 0;
+        return Object.assign({}, n, {
+          helpful: n.helpful + bump,
+          markHelpful: () => this.setState({ helpful: Object.assign({}, s.helpful, { [key]: 1 }) })
+        });
+      });
+      notes = base.concat(s.extraNotes[b.id] || []);
+    }
+
+    // reader
+    const P = Component.PAGES;
+    const li = s.spread * 2;
+    const leftText = P[li] || '';
+    const rightText = P[li + 1] || '';
+    const maxSpread = Math.ceil(P.length / 2) - 1;
+
+    // opening animation
+    const style = this.props.openStyle || 'swing + zoom';
+    const swing = style !== 'zoom only';
+
+    const bm = s.bookId != null && s.bookmarks[s.bookId + '-' + s.spread];
+
+    return {
+      isHome: s.view === 'home',
+      isDetail: s.view === 'detail' && !!dBook,
+      isReader: s.view === 'reader' && !!dBook,
+      showNav: s.view !== 'reader',
+      badgesOn: this.props.showBadges ?? true,
+      shelves, dBook, similar, notes, leaveBook: () => this.setState({ hoverId: null }),
+
+      goHome: () => this.setView('home', { bookId: null }),
+      backToDetail: () => this.setView('detail', {}),
+      readCurrent: () => this.beginRead(s.bookId),
+      toastSoon: () => this.showToast('Coming in the next iteration of this prototype.'),
+      toastSubmit: () => this.showToast('The submit-for-review flow is coming in the next iteration.'),
+      reportBook: () => this.showToast('Reported. A librarian will take a look.'),
+      tipOwner: () => this.showToast('Tip sent to the author \u2014 thank you.'),
+
+      toggleSave: () => this.setState({ saved: Object.assign({}, s.saved, { [s.bookId]: !s.saved[s.bookId] }) }),
+      saveLabel: s.saved[s.bookId] ? 'Saved \u2713' : 'Save',
+
+      noteText: s.noteText,
+      setNote: (e) => this.setState({ noteText: e.target.value }),
+      addNote: () => {
+        const t = s.noteText.trim();
+        if (!t || !s.bookId) return;
+        const list = (s.extraNotes[s.bookId] || []).concat([{ name: 'You', note: t, helpful: 0, markHelpful: () => {} }]);
+        this.setState({ extraNotes: Object.assign({}, s.extraNotes, { [s.bookId]: list }), noteText: '' });
+      },
+
+      leftText, rightText,
+      leftNum: li + 1, rightNum: li + 2,
+      showChapter: s.spread === 0,
+      pageLabel: 'Page ' + (li + 1) + '\u2013' + Math.min(li + 2, P.length) + ' of ' + P.length,
+      progressPct: Math.round(Math.min(li + 2, P.length) / P.length * 100) + '%',
+      prevOp: s.spread > 0 ? 1 : .35,
+      nextOp: s.spread < maxSpread ? 1 : .35,
+      nextPage: () => this.next(),
+      prevPage: () => this.prev(),
+      flipping: s.flip,
+      flipText: s.flipText,
+      toggleBookmark: () => this.setState({ bookmarks: Object.assign({}, s.bookmarks, { [s.bookId + '-' + s.spread]: !bm }) }),
+      bmLabel: bm ? 'Bookmarked \u2713' : 'Bookmark this page',
+      bmColor: bm ? '#1C1915' : '#6E675C',
+
+      opening: !!s.opening,
+      growAnim: swing ? 'osBookGrow' : 'osBookZoom',
+      coverAnim: swing ? 'osCoverOpen' : 'osCoverStay',
+      oBg: s.opening ? s.opening.bg : '#29524A',
+      oInk: s.opening ? s.opening.ink : '#F0E8D6',
+      oT: s.opening ? s.opening.t : '',
+      oA: s.opening ? s.opening.a : '',
+
+      toastOn: !!s.toast,
+      toastMsg: s.toast || ''
+    };
+  }
+}
+</script>
+</body>
+</html>
